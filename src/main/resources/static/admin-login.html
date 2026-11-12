@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#151d26">
+  <title>Admin Sign In — AutoAdmin Motors</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="admin-login-body">
+  <main class="admin-login-shell">
+    <a class="brand admin-login-brand" href="/" aria-label="AutoAdmin Motors home">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span class="brand-name">AUTO<span>ADMIN</span><small>MOTORS · SHOWROOM</small></span>
+    </a>
+    <section class="admin-login-card card" aria-labelledby="loginTitle">
+      <div class="eyebrow">STAFF ACCESS · AUTOADMIN MOTORS</div>
+      <h1 id="loginTitle">Admin sign in</h1>
+      <p>Sign in to manage showroom inventory and review recorded sales.</p>
+      <div class="login-notice" id="loginNotice" role="status" aria-live="polite" hidden></div>
+      <form action="/admin/login" method="post" id="adminLoginForm" autocomplete="on">
+        <input type="hidden" name="_csrf" id="csrfField">
+        <label class="form-label" for="username">Username</label>
+        <input class="form-control" id="username" name="username" autocomplete="username" required maxlength="120" autofocus>
+        <label class="form-label" for="password">Password</label>
+        <input class="form-control" id="password" name="password" type="password" autocomplete="current-password" required>
+        <button class="button button-primary btn btn-primary w-100" type="submit" id="loginSubmit">Sign in securely <span>→</span></button>
+      </form>
+      <a class="login-back-link" href="/">← Back to the showroom</a>
+      <small class="login-footnote">Staff credentials are configured privately in the STS run configuration.</small>
+    </section>
+  </main>
+  <script src="/login.js" defer></script>
+</body>
+</html>

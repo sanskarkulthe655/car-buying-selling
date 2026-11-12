@@ -1,0 +1,1 @@
+{"routes":[{"path":"/","title":"Home"},{"path":"/new-cars","title":"New Cars"},{"path":"/used-cars","title":"Second-Hand Cars"},{"path":"/services","title":"Services"},{"path":"/contact","title":"Contact Us"},{"path":"/admin","title":"Admin Dashboard"},{"path":"/admin/login","title":"Admin Login"}]}

@@ -1,0 +1,11 @@
+target/
+*.log
+.DS_Store
+.idea/
+.vscode/
+.env
+.env.*
+!.env.example
+.classpath
+.project
+.settings/

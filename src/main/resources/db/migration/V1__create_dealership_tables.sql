@@ -1,0 +1,41 @@
+CREATE TABLE vehicles (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    make VARCHAR(80) NOT NULL,
+    model VARCHAR(100) NOT NULL,
+    model_year INT NOT NULL,
+    vin VARCHAR(32) NOT NULL UNIQUE,
+    body_type VARCHAR(40) NOT NULL,
+    asking_price DECIMAL(12, 2) NOT NULL,
+    mileage INT NOT NULL DEFAULT 0,
+    status VARCHAR(24) NOT NULL DEFAULT 'AVAILABLE',
+    color VARCHAR(40) NOT NULL DEFAULT '—',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE customers (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(160) NOT NULL,
+    email VARCHAR(180) NOT NULL UNIQUE,
+    phone VARCHAR(40),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE sales (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id BIGINT NOT NULL,
+    customer_id BIGINT NOT NULL,
+    sale_price DECIMAL(12, 2) NOT NULL,
+    sold_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_sales_vehicle FOREIGN KEY (vehicle_id) REFERENCES vehicles(id),
+    CONSTRAINT fk_sales_customer FOREIGN KEY (customer_id) REFERENCES customers(id)
+);
+
+CREATE TABLE service_tasks (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id BIGINT NOT NULL,
+    title VARCHAR(180) NOT NULL,
+    due_date DATE NOT NULL,
+    priority VARCHAR(24) NOT NULL DEFAULT 'NORMAL',
+    completed BOOLEAN NOT NULL DEFAULT FALSE,
+    CONSTRAINT fk_service_vehicle FOREIGN KEY (vehicle_id) REFERENCES vehicles(id)
+);

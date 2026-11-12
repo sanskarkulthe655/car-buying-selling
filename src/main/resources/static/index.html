@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#141b23">
+  <meta name="description" content="Browse new and second-hand cars, compare specifications, and simulate a demo purchase at AutoAdmin Motors.">
+  <title>AutoAdmin Motors — New &amp; Second-Hand Cars</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="/" data-route aria-label="AutoAdmin Motors home">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span class="brand-name">AUTO<span>ADMIN</span><small>MOTORS · NEW &amp; PRE-OWNED</small></span>
+      </a>
+      <div class="nav-caption">THE SHOWROOM</div>
+      <nav class="primary-nav" aria-label="Main navigation">
+        <a class="nav-link" data-route href="/"><span class="nav-icon">⌂</span>Home</a>
+        <a class="nav-link" data-route href="/new-cars"><span class="nav-icon">✦</span>New Cars</a>
+        <a class="nav-link" data-route href="/used-cars"><span class="nav-icon">◈</span>Second-Hand Cars</a>
+        <a class="nav-link" data-route href="/services"><span class="nav-icon">⌁</span>Services</a>
+        <a class="nav-link" data-route href="/contact"><span class="nav-icon">✉</span>Contact Us</a>
+        <a class="nav-link admin-only-nav" data-route href="/admin" id="adminNavLink" hidden><span class="nav-icon">▦</span>Admin Dashboard</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="mysql-status"><span></span><div><strong>MySQL showroom</strong><small>Live inventory · demo checkout</small></div></div>
+        <a class="admin-login-link" id="adminLoginLink" href="/admin/login">Admin sign in <span>→</span></a>
+        <p>Clear details for your next drive.</p>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="mobile-menu btn btn-outline-secondary btn-sm" id="menuToggle" aria-label="Open navigation" type="button">☰</button>
+        <div class="breadcrumbs"><span>AutoAdmin Motors</span><span>/</span><strong id="currentPage">Home</strong></div>
+        <div class="top-right"><span class="connection-pill"><i></i>New + Second-Hand</span><a class="button button-primary btn btn-primary top-sell-button" href="/admin/login" id="topAdminLink">Admin sign in <span>→</span></a></div>
+      </header>
+      <div class="database-alert" id="databaseAlert" hidden></div>
+
+      <section class="page-view" data-page="/" id="homePage">
+        <div class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow"><span></span> AUTOADMIN MOTORS · CURATED SHOWROOM</div>
+            <h1>Choose your next<br><em>great drive.</em></h1>
+            <p>Explore new and second-hand cars with clear pricing, useful specifications, and photos from the showroom.</p>
+            <div class="hero-actions">
+              <a class="button button-primary btn btn-primary" href="#availableCars">Explore the showroom <span>↓</span></a>
+              <a class="button button-light btn btn-outline-secondary" href="/new-cars" data-route>See new cars</a>
+            </div>
+            <div class="hero-footnote"><span class="trust-mark">✓</span> Browse confidently. Every car shown here is available.</div>
+          </div>
+          <div class="hero-photo" id="heroPhoto">
+            <img class="hero-photo-image" id="heroImage" src="/manus-storage/showroom-hero_39e481b6.jpg" data-local-src="/images/showroom-hero.jpg" alt="Cars displayed inside a modern showroom">
+            <div class="hero-photo-caption"><span>THE AUTOADMIN EDITION</span><strong>Details make the difference.</strong></div>
+            <div class="hero-visual-fallback" aria-hidden="true"><div class="fallback-car"><span></span></div><i></i></div>
+          </div>
+        </div>
+        <div class="section-heading showroom-heading" id="availableCars">
+          <div><div class="eyebrow">THE SHOWROOM</div><h2>Find your kind of drive</h2></div>
+          <p>Every detail, ready for a closer look.</p>
+        </div>
+        <div class="inventory-toolbar">
+          <div class="btn-group inventory-filters" role="group" aria-label="Filter by car condition">
+            <button class="btn btn-sm btn-outline-secondary condition-filter active" type="button" data-condition-filter="ALL" aria-pressed="true">All cars</button>
+            <button class="btn btn-sm btn-outline-secondary condition-filter" type="button" data-condition-filter="NEW" aria-pressed="false">New</button>
+            <button class="btn btn-sm btn-outline-secondary condition-filter" type="button" data-condition-filter="USED" aria-pressed="false">Pre-Owned</button>
+          </div>
+          <label class="search-input home-search"><span>⌕</span><input class="form-control form-control-sm" type="search" id="inventorySearch" placeholder="Search make, model or variant" aria-label="Search car listings"></label>
+        </div>
+        <p class="listing-count" id="listingCount" aria-live="polite">Loading showroom cars from MySQL…</p>
+        <div class="public-listing-grid row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4" id="listingGrid" aria-live="polite"></div>
+        <div class="home-bottom"><div><span class="eyebrow">YOUR NEXT DRIVE STARTS HERE</span><h2>Find the one that fits.</h2><p>Compare New and Second-Hand cars on their dedicated showroom pages.</p></div><div class="home-bottom-actions"><a class="button button-primary btn btn-primary" href="/new-cars" data-route>Browse New Cars <span>→</span></a><a class="button button-light btn btn-outline-secondary" href="/used-cars" data-route>Browse Second-Hand</a></div></div>
+      </section>
+
+      <section class="page-view" data-page="/new-cars" id="newCarsPage" hidden>
+        <div class="page-heading"><div><div class="eyebrow">FACTORY-FRESH · AVAILABLE STOCK</div><h1>New Cars. <em>Full details.</em></h1><p>Compare model, variant, powertrain, transmission and verified specifications.</p></div></div>
+        <div class="inventory-toolbar"><span class="inventory-page-label">NEW CAR COLLECTION</span><label class="search-input"><span>⌕</span><input class="form-control form-control-sm" type="search" id="newInventorySearch" placeholder="Search new cars" aria-label="Search new cars"></label></div>
+        <p class="listing-count" id="newListingCount" aria-live="polite">Loading new cars from MySQL…</p>
+        <div class="public-listing-grid row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4" id="newListingGrid" aria-live="polite"></div>
+      </section>
+
+      <section class="page-view" data-page="/used-cars" id="usedCarsPage" hidden>
+        <div class="page-heading"><div><div class="eyebrow">PRE-OWNED · SHOWROOM AVAILABLE</div><h1>Second-Hand Cars. <em>Clear choices.</em></h1><p>Browse pre-owned cars with mileage, colour, pricing and photos up front.</p></div></div>
+        <div class="inventory-toolbar"><span class="inventory-page-label">SECOND-HAND COLLECTION</span><label class="search-input"><span>⌕</span><input class="form-control form-control-sm" type="search" id="usedInventorySearch" placeholder="Search second-hand cars" aria-label="Search second-hand cars"></label></div>
+        <p class="listing-count" id="usedListingCount" aria-live="polite">Loading second-hand cars from MySQL…</p>
+        <div class="public-listing-grid row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4" id="usedListingGrid" aria-live="polite"></div>
+      </section>
+
+      <section class="page-view" data-page="/services" id="servicesPage" hidden>
+        <div class="page-heading"><div><div class="eyebrow">THE AUTOADMIN EXPERIENCE</div><h1>Thoughtful service.<br><em>Better drives.</em></h1><p>From comparing model specifications to showroom support, we keep the details clear.</p></div><a class="button button-primary btn btn-primary" href="/contact" data-route>Talk to our team <span>→</span></a></div>
+        <div class="service-grid row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+          <div class="col"><article class="service-card card h-100"><span>01</span><div class="service-icon">✦</div><h2>New car showroom</h2><p>Compare model, variant, fuel, engine, transmission, and the other specifications saved with each listing.</p><a href="/new-cars" data-route>Explore new cars →</a></article></div>
+          <div class="col"><article class="service-card card h-100"><span>02</span><div class="service-icon">◈</div><h2>Second-hand cars</h2><p>Browse pre-owned vehicles with clear asking prices, mileage, colour, and seller-provided photos.</p><a href="/used-cars" data-route>Browse second-hand →</a></article></div>
+          <div class="col"><article class="service-card card h-100"><span>03</span><div class="service-icon">✓</div><h2>Demo purchase flow</h2><p>Try simulated Card or UPI checkout. It records a demo result only; no real payment is processed.</p><a href="/contact" data-route>Ask the showroom →</a></article></div>
+          <div class="col"><article class="service-card card h-100"><span>04</span><div class="service-icon">✓</div><h2>Buying support</h2><p>Ask our team a question about a car, its specifications, or the next steps.</p><a href="/contact" data-route>Get in touch →</a></article></div>
+          <div class="col"><article class="service-card card h-100"><span>05</span><div class="service-icon">⌁</div><h2>Vehicle care</h2><p>Get help understanding routine upkeep and planning your next maintenance visit.</p><a href="/contact" data-route>Ask about vehicle care →</a></article></div>
+          <div class="col"><article class="service-card service-callout card h-100"><span>NEED A HAND?</span><h2>A real person can help.</h2><p>Tell us what you are looking for and the showroom team will point you in the right direction.</p><a class="button button-primary btn btn-primary" href="/contact" data-route>Contact Us →</a></article></div>
+        </div>
+        <section class="services-faq card mt-4" aria-labelledby="quickAnswersHeading">
+          <div class="card-body">
+            <div class="eyebrow">QUICK ANSWERS</div><h2 class="h4 mt-2 mb-3" id="quickAnswersHeading">A few useful details</h2>
+            <div class="accordion" id="serviceAnswers">
+              <div class="accordion-item"><h3 class="accordion-header" id="answerHeadingOne"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#answerOne" aria-expanded="true" aria-controls="answerOne">Can I compare new and pre-owned cars?</button></h3><div id="answerOne" class="accordion-collapse collapse show" aria-labelledby="answerHeadingOne" data-bs-parent="#serviceAnswers"><div class="accordion-body">Yes. Use the Home filters to see all cars, new cars, or pre-owned listings.</div></div></div>
+              <div class="accordion-item"><h3 class="accordion-header" id="answerHeadingTwo"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answerTwo" aria-expanded="false" aria-controls="answerTwo">How are new-car specifications added?</button></h3><div id="answerTwo" class="accordion-collapse collapse" aria-labelledby="answerHeadingTwo" data-bs-parent="#serviceAnswers"><div class="accordion-body">The person creating a New listing enters the model, variant, fuel, transmission, engine or motor details, and any optional specifications. Those saved details appear in the car’s full-spec view.</div></div></div>
+              <div class="accordion-item"><h3 class="accordion-header" id="answerHeadingThree"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answerThree" aria-expanded="false" aria-controls="answerThree">Where are car photos and specifications stored?</button></h3><div id="answerThree" class="accordion-collapse collapse" aria-labelledby="answerHeadingThree" data-bs-parent="#serviceAnswers"><div class="accordion-body">Vehicle details, specifications, contact requests, and uploaded photo bytes are stored in the project’s MySQL database.</div></div></div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="page-view" data-page="/contact" id="contactPage" hidden>
+        <div class="page-heading"><div><div class="eyebrow">CONTACT THE SHOWROOM</div><h1>Let’s find the <em>right car.</em></h1><p>Ask about a new model, pre-owned listing, or dealership service.</p></div></div>
+        <div class="contact-layout row g-4">
+          <div class="contact-details col-lg-5">
+            <article><span class="contact-icon">⌖</span><div><small>DEALERSHIP</small><strong>AutoAdmin Motors</strong><p>Send us a message for location and visit details.</p></div></article>
+            <article><span class="contact-icon">✉</span><div><small>CONTACT</small><strong>Use the message form</strong><p>Include the make, model, and variant if your question is about a car.</p></div></article>
+            <article><span class="contact-icon">◷</span><div><small>FOLLOW-UP</small><strong>We’ll review your message</strong><p>Your enquiry is saved in MySQL.</p></div></article>
+            <div class="mysql-callout"><i></i> Enquiries are stored in the same MySQL database.</div>
+          </div>
+          <form class="form-card contact-form card col-lg-7" id="contactForm">
+            <span class="panel-kicker">CONTACT FORM</span><h2>How can we help?</h2>
+            <label class="form-label">Your name<input class="form-control" name="name" required maxlength="160" placeholder="Full name"></label>
+            <div class="two-fields row g-3">
+              <label class="form-label col-md-6">Email address<input class="form-control" name="email" required type="email" maxlength="180" placeholder="you@example.com"></label>
+              <label class="form-label col-md-6">Phone <small>(optional)</small><input class="form-control" name="phone" maxlength="40" placeholder="Phone number"></label>
+            </div>
+            <label class="form-label">Subject<input class="form-control" name="subject" required maxlength="160" placeholder="What is this about?"></label>
+            <label class="form-label">Message<textarea class="form-control" name="message" required maxlength="2000" rows="5" placeholder="Write your message"></textarea></label>
+            <button class="button button-primary btn btn-primary" type="submit">Send message <span>→</span></button>
+            <small id="contactFeedback" class="form-feedback" aria-live="polite"></small>
+          </form>
+        </div>
+      </section>
+
+      <section class="page-view" data-page="/admin" id="adminPage" hidden>
+        <div class="page-heading"><div><div class="eyebrow">STAFF ACCESS · INVENTORY &amp; SALES</div><h1>Admin <em>Dashboard.</em></h1><p>Manage showroom stock, record offline sales and review demo payment history.</p></div><form action="/admin/logout" method="post" id="logoutForm"><input type="hidden" name="_csrf" id="logoutCsrf"><button class="button button-light btn btn-outline-secondary" type="submit">Sign out</button></form></div>
+        <div class="admin-welcome"><span>AUTHENTICATED ADMIN</span><strong id="adminUsername">Secure showroom session</strong><small>Car changes and transaction history are saved in MySQL.</small></div>
+        <div class="metric-grid admin-metrics"><article class="metric-card metric-main"><span>AVAILABLE INVENTORY</span><strong id="availableMetric">—</strong><small>Cars currently shown to the public</small></article><article class="metric-card"><span>COMPLETED SALES</span><strong id="salesMetric">—</strong><small>Public demo + offline sale records</small></article><article class="metric-card"><span>DEMO ATTEMPTS</span><strong id="attemptsMetric">—</strong><small>Successful and declined simulations</small></article></div>
+        <div class="admin-tabs" role="tablist" aria-label="Admin dashboard sections"><button class="admin-tab active" type="button" data-admin-tab="inventory" aria-selected="true">Inventory</button><button class="admin-tab" type="button" data-admin-tab="sales" aria-selected="false">Sales history</button><button class="admin-tab" type="button" data-admin-tab="payments" aria-selected="false">Demo payments</button></div>
+        <section class="admin-panel" data-admin-panel="inventory" id="adminInventoryPanel">
+        <div class="panel admin-inventory-panel"><div class="panel-heading"><div><span class="panel-kicker">SHOWROOM STOCK</span><h2>Vehicle inventory</h2></div><div class="heading-actions"><button class="button button-primary btn btn-primary" type="button" id="addVehicleButton">＋ Add a car</button></div></div><div class="table-wrap"><table><thead><tr><th>VEHICLE</th><th>TYPE / STATUS</th><th>PRICE</th><th>VIN / CHASSIS</th><th>PHOTOS</th><th>ACTIONS</th></tr></thead><tbody id="adminInventoryBody"><tr><td colspan="6" class="empty-state">Loading inventory from MySQL…</td></tr></tbody></table></div></div>
+        <div class="sell-layout row g-4">
+          <form class="form-card sell-form card col-lg-8" id="listingForm" enctype="multipart/form-data">
+            <span class="panel-kicker">ADMIN · VEHICLE RECORD</span><h2 id="listingFormTitle">Add a car</h2><p id="listingModeHint">Enter the vehicle details and attach up to five photos.</p>
+            <div class="sell-form-grid row g-3">
+              <label class="form-label col-md-6">Condition<select class="form-select" id="conditionType" name="conditionType" required><option value="USED" selected>Pre-Owned</option><option value="NEW">New</option></select></label>
+              <label class="form-label col-md-6">Make<input class="form-control" name="make" required maxlength="80" placeholder="e.g. Maruti Suzuki"></label>
+              <label class="form-label col-md-6">Model<input class="form-control" name="model" required maxlength="100" placeholder="e.g. Swift"></label>
+              <label class="form-label col-md-6">Model year<input class="form-control" name="year" type="number" required min="1900" max="2035" placeholder="2026"></label>
+              <label class="form-label col-md-6">Body type<select class="form-select" name="bodyType" required><option value="">Choose one</option><option>SUV</option><option>Sedan</option><option>Coupe</option><option>Hatchback</option><option>Truck</option><option>Wagon</option><option>EV</option><option>Other</option></select></label>
+              <label class="form-label col-md-6" id="listingPriceField"><span id="listingPriceLabel">Asking price (₹)</span><input class="form-control" name="price" type="number" required min="0" step="1000" placeholder="e.g. 650000"></label>
+              <label class="form-label col-md-6" id="listingMileageField"><span id="listingMileageLabel">Mileage (km)</span><input class="form-control" name="mileage" type="number" min="0" value="0" placeholder="e.g. 24000"></label>
+              <label class="form-label col-md-6">Colour<input class="form-control" name="color" required maxlength="40" placeholder="e.g. Graphite grey"></label>
+              <label class="form-label col-md-6" id="vinField">VIN / chassis number<input class="form-control" id="vin" name="vin" required minlength="6" maxlength="32" placeholder="Required for pre-owned cars"></label>
+              <label class="form-label col-md-6">Seller / dealership name<input class="form-control" name="sellerName" required maxlength="120" placeholder="Your name or showroom"></label>
+            </div>
+            <fieldset class="new-car-specs card" id="newCarSpecs" hidden>
+              <legend><span class="panel-kicker">NEW-CAR MODEL SPECIFICATIONS</span></legend>
+              <p>Required fields help buyers understand the exact model and variant. Add other figures when available.</p>
+              <div class="sell-form-grid row g-3">
+                <label class="form-label col-md-6">Variant / trim<input class="form-control" name="variant" maxlength="120" placeholder="Model variant" data-new-required></label>
+                <label class="form-label col-md-6">Fuel / powertrain<select class="form-select" name="fuelType" data-new-required><option value="">Choose fuel type</option><option>Petrol</option><option>Diesel</option><option>CNG</option><option>LPG</option><option>Hybrid</option><option>Electric</option><option>Hydrogen</option><option>Other</option></select></label>
+                <label class="form-label col-md-6">Transmission<select class="form-select" name="transmission" data-new-required><option value="">Choose transmission</option><option>Manual</option><option>Automatic</option><option>AMT</option><option>CVT</option><option>DCT</option><option>Single-speed</option><option>Other</option></select></label>
+                <label class="form-label col-md-6">Engine / motor<input class="form-control" name="engineSpec" maxlength="120" placeholder="e.g. 1.5 L turbo or 45 kWh motor" data-new-required></label>
+                <label class="form-label col-md-6">Power output<input class="form-control" name="powerOutput" maxlength="60" placeholder="e.g. 110 kW / 150 bhp"></label>
+                <label class="form-label col-md-6">Torque<input class="form-control" name="torqueOutput" maxlength="60" placeholder="e.g. 250 Nm"></label>
+                <label class="form-label col-md-6">Efficiency / electric range<input class="form-control" name="efficiencyRange" maxlength="80" placeholder="e.g. km/l or claimed km range"></label>
+                <label class="form-label col-md-6">Drivetrain<select class="form-select" name="drivetrain"><option value="">Choose drivetrain</option><option>FWD</option><option>RWD</option><option>AWD</option><option>4WD</option><option>Other</option></select></label>
+                <label class="form-label col-md-6">Seating capacity<input class="form-control" name="seatCount" type="number" min="1" max="20" placeholder="e.g. 5"></label>
+                <label class="form-label col-md-6">Manufacturer warranty<input class="form-control" name="warranty" maxlength="120" placeholder="e.g. 3 years / 100,000 km"></label>
+              </div>
+            </fieldset>
+            <div class="photo-upload-block">
+              <div><span class="panel-kicker">VEHICLE PHOTOS</span><p class="photo-guidance">Up to 5 photos · JPG, PNG, or WebP · maximum 2 MB each. Stored in MySQL.</p></div>
+              <label class="photo-picker" for="vehiclePhotos"><span class="photo-picker-icon">＋</span><span><strong>Choose photos</strong><small>Exterior, interior, and key details</small></span><input id="vehiclePhotos" name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple aria-describedby="photoFeedback"></label>
+              <div class="photo-preview-grid" id="photoPreviewGrid" aria-live="polite"></div>
+              <small class="form-feedback" id="photoFeedback" aria-live="polite">No photos selected yet.</small>
+            </div>
+            <div class="admin-form-actions"><button class="button button-primary btn btn-primary submit-listing" type="submit" id="saveListingButton">Save car to MySQL <span>→</span></button><button class="button button-light btn btn-outline-secondary" type="button" id="cancelListingButton">Clear form</button></div>
+            <small id="listingFeedback" class="form-feedback" aria-live="polite"></small>
+          </form>
+          <aside class="sell-note-card card col-lg-4">
+            <span class="service-icon">▦</span><div class="panel-kicker">ADMIN WORKBENCH</div><h2>Keep the showroom<br>up to date.</h2>
+            <p>Add, edit, or remove eligible inventory, manage car photos, record in-person sales, and review public demo payment attempts.</p>
+            <div class="photo-storage-note"><i></i> Vehicle data, specifications, and image bytes stay in MySQL.</div>
+            <a class="text-link" href="/contact" data-route>Questions? Contact Us →</a>
+          </aside>
+        </div>
+        </section>
+        <section class="admin-panel" data-admin-panel="sales" hidden><div class="panel"><div class="panel-heading"><div><span class="panel-kicker">COMPLETED TRANSACTIONS</span><h2>Sales history</h2></div><button class="table-action" type="button" id="refreshSalesButton">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>SALE #</th><th>VEHICLE</th><th>BUYER</th><th>SALE PRICE</th><th>CHANNEL</th><th>DATE</th></tr></thead><tbody id="salesHistoryBody"><tr><td colspan="6" class="empty-state">Loading sales history from MySQL…</td></tr></tbody></table></div></div></section>
+        <section class="admin-panel" data-admin-panel="payments" hidden><div class="panel"><div class="panel-heading"><div><span class="panel-kicker">SIMULATED ONLY · NO MONEY MOVES</span><h2>Demo payment attempts</h2></div><button class="table-action" type="button" id="refreshPaymentsButton">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>REFERENCE</th><th>VEHICLE</th><th>BUYER</th><th>AMOUNT</th><th>METHOD</th><th>RESULT</th><th>DATE</th></tr></thead><tbody id="paymentHistoryBody"><tr><td colspan="7" class="empty-state">Loading demo attempts from MySQL…</td></tr></tbody></table></div></div></section>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal fade vehicle-details-modal" id="vehicleDetailsModal" tabindex="-1" aria-labelledby="vehicleDetailsTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header"><div><span class="panel-kicker" id="vehicleDetailsCondition"></span><h2 class="modal-title fs-4" id="vehicleDetailsTitle">Car specifications</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body" id="vehicleDetailsBody"></div>
+        <div class="modal-footer"><a class="button button-light btn btn-outline-secondary" href="/contact" data-route data-bs-dismiss="modal">Ask the showroom</a><button class="button button-primary btn btn-primary" id="buyDetailsButton" type="button">Buy this car <span>→</span></button></div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="demoPurchaseModal" tabindex="-1" aria-labelledby="demoPurchaseTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><div><span class="panel-kicker">DEMO CHECKOUT · NO REAL PAYMENT</span><h2 class="modal-title fs-4" id="demoPurchaseTitle">Simulate your purchase</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><form id="demoPurchaseForm"><div class="modal-body"><div class="demo-payment-warning"><strong>Practice mode only.</strong> No real money moves. Do not enter card numbers, PINs, passwords, or UPI credentials.</div><div class="demo-car-summary" id="demoCarSummary"></div><label class="form-label">Buyer name<input class="form-control" name="buyerName" required maxlength="160"></label><label class="form-label">Email address<input class="form-control" name="buyerEmail" type="email" required maxlength="180"></label><label class="form-label">Phone <small>(optional)</small><input class="form-control" name="buyerPhone" maxlength="40"></label><label class="form-label">Demo payment method<select class="form-select" name="paymentMethod" required><option value="CARD">Demo Card</option><option value="UPI">Demo UPI</option></select></label><label class="form-label">Simulated result<select class="form-select" name="simulatedOutcome" required><option value="SUCCESS">Simulate success</option><option value="FAILED">Simulate decline / failure</option></select></label><div id="purchaseFeedback" class="form-feedback" aria-live="polite"></div></div><div class="modal-footer"><button class="button button-light btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button><button class="button button-primary btn btn-primary" type="submit" id="purchaseSubmitButton">Run demo simulation <span>→</span></button></div></form></div></div></div>
+  <div class="modal fade" id="offlineSaleModal" tabindex="-1" aria-labelledby="offlineSaleTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><div><span class="panel-kicker">ADMIN · OFFLINE SALE</span><h2 class="modal-title fs-4" id="offlineSaleTitle">Record an in-person sale</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><form id="offlineSaleForm"><div class="modal-body"><div class="demo-car-summary" id="offlineCarSummary"></div><label class="form-label">Buyer name<input class="form-control" name="buyerName" required maxlength="160"></label><label class="form-label">Email address<input class="form-control" name="buyerEmail" type="email" required maxlength="180"></label><label class="form-label">Phone <small>(optional)</small><input class="form-control" name="buyerPhone" maxlength="40"></label><label class="form-label">Sale price (₹) <small>(optional; defaults to listing price)</small><input class="form-control" name="salePrice" type="number" min="0" step="1000"></label><div id="offlineSaleFeedback" class="form-feedback" aria-live="polite"></div></div><div class="modal-footer"><button class="button button-light btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button><button class="button button-primary btn btn-primary" type="submit">Record offline sale <span>→</span></button></div></form></div></div></div>
+  <div class="modal fade" id="adminPhotosModal" tabindex="-1" aria-labelledby="adminPhotosTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content"><div class="modal-header"><div><span class="panel-kicker">ADMIN · MYSQL PHOTO RECORDS</span><h2 class="modal-title fs-4" id="adminPhotosTitle">Manage car photos</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><div class="photo-management-grid" id="adminPhotoList"></div><form id="adminPhotoForm" class="admin-photo-form"><label class="photo-picker" for="adminPhotoUpload"><span class="photo-picker-icon">＋</span><span><strong>Add photos</strong><small>Up to five total photos per car</small></span><input id="adminPhotoUpload" name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple></label><button class="button button-primary btn btn-primary" type="submit">Save selected photos</button></form><div id="adminPhotoFeedback" class="form-feedback" aria-live="polite"></div></div></div></div></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous" defer></script>
+  <script src="/app.js" defer></script>
+</body>
+</html>
